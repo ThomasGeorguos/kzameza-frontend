@@ -163,7 +163,7 @@ function ProductDetails() {
 
               {product.coverImage ? (
                 <img
-                  src={`/api/images/${product.coverImage}`}
+                  src={product.coverImage}
                   alt={product.title}
                   className="relative z-10 w-full h-full object-contain max-h-96"
                   style={{ filter: "drop-shadow(0 20px 40px rgba(0,0,0,0.3))" }}
@@ -310,7 +310,7 @@ function ProductDetails() {
                     >
                       {p.coverImage && (
                         <img
-                          src={`/api/images/${p.coverImage}`}
+                          src={p.coverImage}
                           alt={p.title}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                         />

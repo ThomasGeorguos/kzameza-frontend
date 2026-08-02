@@ -79,7 +79,7 @@ function AddProduct() {
         });
         setPreview(null);
       } else {
-        alert(data.message || "Something went wrong");
+        alert(data.message || data.error || "Something went wrong");
       }
     } catch (err) {
       console.error(err);

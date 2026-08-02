@@ -186,7 +186,7 @@ function Products() {
                   >
                     {product.coverImage && (
                       <img
-                        src={`/api/images/${product.coverImage}`}
+                        src={product.coverImage}
                         alt={product.title}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       />
