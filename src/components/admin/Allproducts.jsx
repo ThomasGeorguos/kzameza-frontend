@@ -369,9 +369,10 @@ function AllProducts() {
               </button>
               <button
                 onClick={() => handleDelete(confirmDeleteId)}
-                className="flex-1 py-2.5 rounded-xl text-sm font-bold text-white bg-red-500 hover:bg-red-600 transition-all duration-200 cursor-pointer"
+                disabled={deletingId === confirmDeleteId}
+                className="flex-1 py-2.5 rounded-xl text-sm font-bold text-white bg-red-500 hover:bg-red-600 transition-all duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Delete
+                {deletingId === confirmDeleteId ? "Deleting..." : "Delete"}
               </button>
             </div>
           </div>
