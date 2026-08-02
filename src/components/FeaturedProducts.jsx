@@ -132,6 +132,22 @@ function FeaturedProducts() {
                     {product?.title}
                   </h6>
 
+                  {typeof product?.stock === "number" && (
+                    <span
+                      className={`text-xs font-semibold w-fit ${
+                        product.stock === 0
+                          ? "text-red-400"
+                          : product.stock <= 5
+                            ? "text-yellow-400"
+                            : "text-gray-400"
+                      }`}
+                    >
+                      {product.stock === 0
+                        ? "Out of stock"
+                        : `${product.stock} in stock`}
+                    </span>
+                  )}
+
                   <p className="text-gray-400 text-xs leading-relaxed line-clamp-2 flex-1 font-medium">
                     {product?.description}
                   </p>
