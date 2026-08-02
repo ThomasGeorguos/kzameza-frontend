@@ -128,29 +128,40 @@ function FeaturedProducts() {
 
                 {/* Content */}
                 <div className="flex flex-col gap-2 p-4 flex-1">
-                  <h6 className="font-bold text-white text-sm leading-snug line-clamp-2">
+                  <h6 className="font-bold text-white text-sm leading-snug line-clamp-2 group-hover:text-green-400 transition-colors duration-200">
                     {product?.title}
                   </h6>
-
-                  {typeof product?.stock === "number" && (
-                    <span
-                      className={`text-xs font-semibold w-fit ${
-                        product.stock === 0
-                          ? "text-red-400"
-                          : product.stock <= 5
-                            ? "text-yellow-400"
-                            : "text-gray-400"
-                      }`}
-                    >
-                      {product.stock === 0
-                        ? "Out of stock"
-                        : `${product.stock} in stock`}
-                    </span>
-                  )}
 
                   <p className="text-gray-400 text-xs leading-relaxed line-clamp-2 flex-1 font-medium">
                     {product?.description}
                   </p>
+
+                  {typeof product?.stock === "number" && (
+                    <div className="flex items-center gap-1.5">
+                      <span
+                        className={`w-1.5 h-1.5 rounded-full ${
+                          product.stock === 0
+                            ? "bg-red-400"
+                            : product.stock <= 5
+                              ? "bg-yellow-400"
+                              : "bg-green-400"
+                        }`}
+                      />
+                      <span
+                        className={`text-[11px] font-semibold ${
+                          product.stock === 0
+                            ? "text-red-400"
+                            : product.stock <= 5
+                              ? "text-yellow-400"
+                              : "text-green-400"
+                        }`}
+                      >
+                        {product.stock === 0
+                          ? "Out of Stock"
+                          : `${product.stock} in stock`}
+                      </span>
+                    </div>
+                  )}
 
                   {/* Price + Button */}
                   <div className="flex items-center justify-between mt-3 pt-3 border-t border-white/10">
