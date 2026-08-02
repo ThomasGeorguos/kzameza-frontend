@@ -96,7 +96,7 @@ function Cart() {
                   <div className="w-20 h-20 rounded-xl overflow-hidden bg-white/5 border border-white/10 shrink-0">
                     {item.product?.coverImage && (
                       <img
-                        src={`/api/images/${item.product.coverImage}`}
+                        src={item.product.coverImage}
                         alt={item.product?.title}
                         className="w-full h-full object-cover"
                         loading="lazy"

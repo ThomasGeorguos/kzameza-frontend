@@ -262,7 +262,7 @@ function Header() {
                           <div className="w-10 h-10 rounded-lg bg-white/5 border border-white/10 shrink-0 overflow-hidden">
                             {product.coverImage ? (
                               <img
-                                src={`/api/images/${product.coverImage}`}
+                                src={product.coverImage}
                                 alt={product.title}
                                 className="w-full h-full object-cover"
                               />
@@ -566,7 +566,7 @@ function Header() {
                     <div className="w-9 h-9 rounded-lg bg-white/5 border border-white/10 shrink-0 overflow-hidden">
                       {product.coverImage && (
                         <img
-                          src={`/api/images/${product.coverImage}`}
+                          src={product.coverImage}
                           alt={product.title}
                           className="w-full h-full object-cover"
                         />

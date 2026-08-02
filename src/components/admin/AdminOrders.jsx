@@ -224,7 +224,7 @@ function AdminOrders() {
                           <div className="w-14 h-14 rounded-lg overflow-hidden bg-white/5 border border-white/10 shrink-0">
                             {item.coverImage && (
                               <img
-                                src={`/api/images/${item.coverImage}`}
+                                src={item.coverImage}
                                 alt={item.title}
                                 className="w-full h-full object-cover"
                               />
