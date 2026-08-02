@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { ShoppingCart, Package, ArrowUpDown, Search } from "lucide-react";
-import { useCart } from "../cart/UseCart";
+import { useCart } from "../cart/useCart";
 import toast from "react-hot-toast";
 import { apiFetch } from "../config/api";
 

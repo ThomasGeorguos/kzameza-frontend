@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { ShoppingCart, ArrowLeft, Tag } from "lucide-react";
-import { useCart } from "../cart/UseCart";
+import { useCart } from "../cart/useCart";
 import toast from "react-hot-toast";
 import { apiFetch } from "../config/api";
 

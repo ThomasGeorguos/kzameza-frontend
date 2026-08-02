@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { ArrowLeft, MapPin, ShoppingBag, Loader2, Truck } from "lucide-react";
-import { useCart } from "../cart/UseCart";
+import { useCart } from "../cart/useCart";
 import { useAuth } from "../auth/UseAuth";
 import toast from "react-hot-toast";
 import { apiFetch } from "../config/api";

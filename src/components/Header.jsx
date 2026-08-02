@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { useAuth } from "../auth/UseAuth";
-import { useCart } from "../cart/UseCart";
+import { useCart } from "../cart/useCart";
 import {
   Settings,
   ClipboardList,
