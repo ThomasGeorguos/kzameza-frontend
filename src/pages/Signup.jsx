@@ -11,6 +11,7 @@ import {
   CheckCircle,
   XCircle,
 } from "lucide-react";
+import { apiFetch } from "../config/api";
 
 // ── Password Strength ──
 const getPasswordStrength = (password) => {
@@ -156,7 +157,7 @@ function Signup() {
     if (!validate()) return;
     setLoading(true);
     try {
-      const res = await fetch("/api/users/signup", {
+      const res = await apiFetch("/api/users/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",

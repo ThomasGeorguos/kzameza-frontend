@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Mail, Lock, Eye, EyeOff, ShoppingBag, XCircle } from "lucide-react";
 import { useAuth } from "../auth/UseAuth";
+import { apiFetch } from "../config/api";
 
 const validateEmail = (email) => {
   if (!email) return "Email is required";
@@ -60,7 +61,7 @@ function Login() {
     if (!validate()) return;
     setLoading(true);
     try {
-      const res = await fetch("/api/users/login", {
+      const res = await apiFetch("/api/users/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",

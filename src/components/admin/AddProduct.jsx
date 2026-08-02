@@ -9,6 +9,7 @@ import {
   ToggleLeft,
   Percent,
 } from "lucide-react";
+import { apiFetch } from "../../config/api";
 
 function AddProduct() {
   const [categories, setCategories] = useState([]);
@@ -27,7 +28,7 @@ function AddProduct() {
   });
 
   useEffect(() => {
-    fetch("/api/category", { credentials: "include" })
+    apiFetch("/api/category", { credentials: "include" })
       .then((res) => res.json())
       .then((data) => {
         setCategories(data?.categories);
@@ -57,7 +58,7 @@ function AddProduct() {
       Object.entries(form).forEach(([key, val]) => {
         if (val !== null && val !== "") formData.append(key, val);
       });
-      const res = await fetch("/api/products", {
+      const res = await apiFetch("/api/products", {
         method: "POST",
         credentials: "include",
         body: formData,

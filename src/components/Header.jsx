@@ -9,6 +9,7 @@ import {
   ChevronDown,
   LayoutDashboard,
 } from "lucide-react";
+import { apiFetch } from "../config/api";
 
 function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -41,12 +42,12 @@ function Header() {
   const allNavLinks = [...leftNavLinks, ...rightNavLinks];
 
   useEffect(() => {
-    fetch("/api/products")
+    apiFetch("/api/products")
       .then((res) => res.json())
       .then((data) => setProducts(data.products || []))
       .catch(console.error);
 
-    fetch("/api/category")
+    apiFetch("/api/category")
       .then((res) => res.json())
       .then((data) => setCategories(data.categories || []))
       .catch(console.error);

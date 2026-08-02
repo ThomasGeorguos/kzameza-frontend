@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { ShoppingCart, ArrowLeft, Tag } from "lucide-react";
 import { useCart } from "../cart/UseCart";
 import toast from "react-hot-toast";
+import { apiFetch } from "../config/api";
 
 function CategoryProducts() {
   const { categoryId } = useParams();
@@ -13,7 +14,7 @@ function CategoryProducts() {
 
   useEffect(() => {
     setLoading(true);
-    fetch(`/api/products/category/${categoryId}`)
+    apiFetch(`/api/products/category/${categoryId}`)
       .then((res) => res.json())
       .then((data) => {
         setProducts(data.products || []);

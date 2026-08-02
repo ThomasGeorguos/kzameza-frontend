@@ -11,6 +11,7 @@ import {
   CheckCircle,
 } from "lucide-react";
 import { useAuth } from "../auth/UseAuth";
+import { apiFetch } from "../config/api";
 
 // ── Validations ──
 const validateName = (name) => {
@@ -157,7 +158,7 @@ function UserSettings() {
 
     setProfileLoading(true);
     try {
-      const res = await fetch(`/api/users/${user._id}`, {
+      const res = await apiFetch(`/api/users/${user._id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -238,7 +239,7 @@ function UserSettings() {
 
     setPassLoading(true);
     try {
-      const res = await fetch(`/api/users/${user._id}`, {
+      const res = await apiFetch(`/api/users/${user._id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         credentials: "include",

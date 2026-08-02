@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ClipboardList, Package, ChevronDown, MapPin } from "lucide-react";
+import { apiFetch } from "../config/api";
 
 const STATUS_STYLES = {
   pending: {
@@ -26,7 +27,7 @@ function MyOrders() {
   const [openId, setOpenId] = useState(null);
 
   useEffect(() => {
-    fetch("/api/orders/my", { credentials: "include" })
+    apiFetch("/api/orders/my", { credentials: "include" })
       .then((res) => res.json())
       .then((data) => {
         setOrders(data.orders || []);

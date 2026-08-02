@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { ShoppingCart, ChevronRight } from "lucide-react";
 import { useCart } from "../cart/UseCart";
 import toast from "react-hot-toast";
+import { apiFetch } from "../config/api";
 
 function FeaturedProducts() {
   const [products, setProducts] = useState([]);
@@ -11,7 +12,7 @@ function FeaturedProducts() {
   const { addToCart } = useCart();
 
   useEffect(() => {
-    fetch("/api/products")
+    apiFetch("/api/products")
       .then((res) => {
         if (!res.ok) {
           throw new Error("Failed to fetch products");

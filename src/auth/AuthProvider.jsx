@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "./AuthContext";
+import { apiFetch } from "../config/api";
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
@@ -9,7 +10,7 @@ export function AuthProvider({ children }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("/api/users/verify", {
+    apiFetch("/api/users/verify", {
       method: "GET",
       credentials: "include",
     })
@@ -37,7 +38,7 @@ export function AuthProvider({ children }) {
 
   const logout = async () => {
     try {
-      await fetch("/api/users/logout", {
+      await apiFetch("/api/users/logout", {
         method: "POST",
         credentials: "include",
       });

@@ -4,6 +4,7 @@ import { ArrowLeft, MapPin, ShoppingBag, Loader2, Truck } from "lucide-react";
 import { useCart } from "../cart/UseCart";
 import { useAuth } from "../auth/UseAuth";
 import toast from "react-hot-toast";
+import { apiFetch } from "../config/api";
 
 function Checkout() {
   const { cart, totalItems, totalPrice, fetchCart, loading } = useCart();
@@ -45,7 +46,7 @@ function Checkout() {
     setShowDeliveryAlert(false);
     setSubmitting(true);
     try {
-      const res = await fetch("/api/orders", {
+      const res = await apiFetch("/api/orders", {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },

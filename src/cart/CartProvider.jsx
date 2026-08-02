@@ -9,6 +9,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { CartContext } from "./CartContext";
 import { AuthContext } from "../auth/AuthContext";
+import { apiFetch } from "../config/api";
 
 const calcTotals = (cart) => {
   cart.totalItems = cart.items.reduce((acc, item) => acc + item.quantity, 0);
@@ -40,7 +41,7 @@ export function CartProvider({ children }) {
     try {
       setLoading(true);
 
-      const res = await fetch("/api/cart", {
+      const res = await apiFetch("/api/cart", {
         credentials: "include",
         headers,
       });
@@ -106,7 +107,7 @@ export function CartProvider({ children }) {
     });
     // بعت للباك
     try {
-      const res = await fetch("/api/cart", {
+      const res = await apiFetch("/api/cart", {
         method: "POST",
         credentials: "include",
         headers,
@@ -165,7 +166,7 @@ export function CartProvider({ children }) {
       debounceTimers.current[productId] = setTimeout(async () => {
         const finalQuantity = latestQuantity.current[productId];
         try {
-          const res = await fetch("/api/cart", {
+          const res = await apiFetch("/api/cart", {
             method: "PUT",
             credentials: "include",
             headers,
@@ -195,7 +196,7 @@ export function CartProvider({ children }) {
         delete debounceTimers.current[productId];
       }
 
-      const res = await fetch("/api/cart", {
+      const res = await apiFetch("/api/cart", {
         method: "DELETE",
         credentials: "include",
         headers,
@@ -225,7 +226,7 @@ export function CartProvider({ children }) {
 
   const clearCart = async () => {
     try {
-      const res = await fetch("/api/cart/clear", {
+      const res = await apiFetch("/api/cart/clear", {
         method: "DELETE",
         credentials: "include",
         headers,

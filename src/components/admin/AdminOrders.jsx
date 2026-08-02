@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { ChevronDown, MapPin, Phone, Mail, ShoppingBag } from "lucide-react";
 import toast from "react-hot-toast";
+import { apiFetch } from "../../config/api";
 
 const STATUS_STYLES = {
   pending: {
@@ -32,7 +33,7 @@ function AdminOrders() {
 
   const fetchOrders = () => {
     setLoading(true);
-    fetch("/api/orders", { credentials: "include" })
+    apiFetch("/api/orders", { credentials: "include" })
       .then((res) => res.json())
       .then((data) => {
         setOrders(data.orders || []);
@@ -51,7 +52,7 @@ function AdminOrders() {
   const handleStatusChange = async (orderId, status) => {
     setUpdatingId(orderId);
     try {
-      const res = await fetch(`/api/orders/${orderId}/status`, {
+      const res = await apiFetch(`/api/orders/${orderId}/status`, {
         method: "PATCH",
         credentials: "include",
         headers: { "Content-Type": "application/json" },

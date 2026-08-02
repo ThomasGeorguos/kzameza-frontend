@@ -1,116 +1,130 @@
-import { useEffect, useMemo, useState } from "react"
-import { Search, Shield, ShieldOff, Trash2, Mail, Phone, Loader2, Users } from "lucide-react"
-import toast from "react-hot-toast"
-import { useAuth } from "../../auth/UseAuth"
+import { useEffect, useMemo, useState } from "react";
+import {
+  Search,
+  Shield,
+  ShieldOff,
+  Trash2,
+  Mail,
+  Phone,
+  Loader2,
+  Users,
+} from "lucide-react";
+import toast from "react-hot-toast";
+import { useAuth } from "../../auth/UseAuth";
+import { apiFetch } from "../../config/api";
 
 function Customers() {
-  const { user: currentUser } = useAuth()
-  const [users, setUsers] = useState([])
-  const [orders, setOrders] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [query, setQuery] = useState("")
-  const [roleFilter, setRoleFilter] = useState("all")
-  const [updatingId, setUpdatingId] = useState(null)
-  const [confirmDeleteId, setConfirmDeleteId] = useState(null)
+  const { user: currentUser } = useAuth();
+  const [users, setUsers] = useState([]);
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [query, setQuery] = useState("");
+  const [roleFilter, setRoleFilter] = useState("all");
+  const [updatingId, setUpdatingId] = useState(null);
+  const [confirmDeleteId, setConfirmDeleteId] = useState(null);
 
   useEffect(() => {
-    fetch("/api/users", { credentials: "include" })
-      .then(res => res.json())
-      .then(data => setUsers(data.users || []))
-      .catch(err => console.error(err))
-      .finally(() => setLoading(false))
+    apiFetch("/api/users", { credentials: "include" })
+      .then((res) => res.json())
+      .then((data) => setUsers(data.users || []))
+      .catch((err) => console.error(err))
+      .finally(() => setLoading(false));
 
-    fetch("/api/orders", { credentials: "include" })
-      .then(res => res.json())
-      .then(data => setOrders(data.orders || []))
-      .catch(err => console.error(err))
-  }, [])
+    apiFetch("/api/orders", { credentials: "include" })
+      .then((res) => res.json())
+      .then((data) => setOrders(data.orders || []))
+      .catch((err) => console.error(err));
+  }, []);
 
   // عدد الأوردرات وإجمالي الصرف لكل عميل
   const ordersByUser = useMemo(() => {
-    const map = new Map()
+    const map = new Map();
     orders.forEach((order) => {
-      const uid = order.user?._id || order.user
-      const prev = map.get(uid) || { count: 0, total: 0 }
-      prev.count += 1
-      if (order.status !== "cancelled") prev.total += order.totalPrice || 0
-      map.set(uid, prev)
-    })
-    return map
-  }, [orders])
+      const uid = order.user?._id || order.user;
+      const prev = map.get(uid) || { count: 0, total: 0 };
+      prev.count += 1;
+      if (order.status !== "cancelled") prev.total += order.totalPrice || 0;
+      map.set(uid, prev);
+    });
+    return map;
+  }, [orders]);
 
   const visibleUsers = useMemo(() => {
-    let list = [...users]
+    let list = [...users];
 
     if (roleFilter !== "all") {
-      list = list.filter(u => u.role === roleFilter)
+      list = list.filter((u) => u.role === roleFilter);
     }
 
     if (query.trim()) {
-      const q = query.toLowerCase()
+      const q = query.toLowerCase();
       list = list.filter(
-        u =>
+        (u) =>
           u.name?.toLowerCase().includes(q) ||
           u.email?.toLowerCase().includes(q) ||
-          u.phoneNumber?.includes(q)
-      )
+          u.phoneNumber?.includes(q),
+      );
     }
 
-    return list
-  }, [users, query, roleFilter])
+    return list;
+  }, [users, query, roleFilter]);
 
   const handleToggleRole = async (targetUser) => {
-    const newRole = targetUser.role === "admin" ? "user" : "admin"
-    setUpdatingId(targetUser._id)
+    const newRole = targetUser.role === "admin" ? "user" : "admin";
+    setUpdatingId(targetUser._id);
     try {
-      const res = await fetch(`/api/users/${targetUser._id}`, {
+      const res = await apiFetch(`/api/users/${targetUser._id}`, {
         method: "PUT",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ role: newRole }),
-      })
-      const data = await res.json()
+      });
+      const data = await res.json();
       if (!res.ok) {
-        toast.error(data.message || "Failed to update role")
-        return
+        toast.error(data.message || "Failed to update role");
+        return;
       }
-      setUsers(prev => prev.map(u => (u._id === targetUser._id ? data.user : u)))
-      toast.success(`${targetUser.name} is now ${newRole === "admin" ? "an admin" : "a regular user"}`)
+      setUsers((prev) =>
+        prev.map((u) => (u._id === targetUser._id ? data.user : u)),
+      );
+      toast.success(
+        `${targetUser.name} is now ${newRole === "admin" ? "an admin" : "a regular user"}`,
+      );
     } catch (err) {
-      toast.error(err.message || "Server error")
+      toast.error(err.message || "Server error");
     } finally {
-      setUpdatingId(null)
+      setUpdatingId(null);
     }
-  }
+  };
 
   const handleDelete = async (userId) => {
-    setUpdatingId(userId)
+    setUpdatingId(userId);
     try {
-      const res = await fetch(`/api/users/${userId}`, {
+      const res = await apiFetch(`/api/users/${userId}`, {
         method: "DELETE",
         credentials: "include",
-      })
-      const data = await res.json()
+      });
+      const data = await res.json();
       if (!res.ok) {
-        toast.error(data.message || "Failed to delete user")
-        return
+        toast.error(data.message || "Failed to delete user");
+        return;
       }
-      setUsers(prev => prev.filter(u => u._id !== userId))
-      toast.success("User deleted successfully")
+      setUsers((prev) => prev.filter((u) => u._id !== userId));
+      toast.success("User deleted successfully");
     } catch (err) {
-      toast.error(err.message || "Server error")
+      toast.error(err.message || "Server error");
     } finally {
-      setUpdatingId(null)
-      setConfirmDeleteId(null)
+      setUpdatingId(null);
+      setConfirmDeleteId(null);
     }
-  }
+  };
 
   if (loading) {
     return (
       <div className="flex items-center justify-center py-24">
         <div className="w-10 h-10 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
       </div>
-    )
+    );
   }
 
   return (
@@ -155,14 +169,18 @@ function Customers() {
           <div className="w-16 h-16 rounded-2xl bg-green-500/15 border border-green-400/25 flex items-center justify-center mx-auto mb-5">
             <Users className="w-7 h-7 text-green-400" />
           </div>
-          <h2 className="text-white text-xl font-bold mb-2">No customers found</h2>
-          <p className="text-gray-400 text-sm">Try a different search or filter.</p>
+          <h2 className="text-white text-xl font-bold mb-2">
+            No customers found
+          </h2>
+          <p className="text-gray-400 text-sm">
+            Try a different search or filter.
+          </p>
         </div>
       ) : (
         <div className="flex flex-col gap-3">
           {visibleUsers.map((u) => {
-            const stats = ordersByUser.get(u._id) || { count: 0, total: 0 }
-            const isSelf = currentUser?._id === u._id
+            const stats = ordersByUser.get(u._id) || { count: 0, total: 0 };
+            const isSelf = currentUser?._id === u._id;
             return (
               <div
                 key={u._id}
@@ -175,7 +193,10 @@ function Customers() {
                   </div>
                   <div className="min-w-0">
                     <p className="text-white text-sm font-bold truncate">
-                      {u.name} {isSelf && <span className="text-gray-500 font-normal">(you)</span>}
+                      {u.name}{" "}
+                      {isSelf && (
+                        <span className="text-gray-500 font-normal">(you)</span>
+                      )}
                     </p>
                     <p className="text-gray-500 text-xs">
                       Joined {new Date(u.createdAt).toLocaleDateString()}
@@ -202,7 +223,9 @@ function Customers() {
                 </div>
 
                 <div className="text-xs text-gray-400 min-w-[100px]">
-                  <p className="text-green-400 font-black text-sm">EGP {stats.total.toLocaleString()}</p>
+                  <p className="text-green-400 font-black text-sm">
+                    EGP {stats.total.toLocaleString()}
+                  </p>
                   <p>total spent</p>
                 </div>
 
@@ -243,7 +266,7 @@ function Customers() {
                   </button>
                 </div>
               </div>
-            )
+            );
           })}
         </div>
       )}
@@ -255,9 +278,12 @@ function Customers() {
             <div className="w-16 h-16 rounded-full bg-red-50 border-2 border-red-200 flex items-center justify-center mx-auto mb-5">
               <Trash2 className="w-7 h-7 text-red-400" />
             </div>
-            <h3 className="text-gray-800 font-black text-lg mb-2">Delete Customer</h3>
+            <h3 className="text-gray-800 font-black text-lg mb-2">
+              Delete Customer
+            </h3>
             <p className="text-gray-500 text-sm leading-relaxed mb-6">
-              Are you sure you want to delete this account? This can't be undone.
+              Are you sure you want to delete this account? This can't be
+              undone.
             </p>
             <div className="flex gap-3">
               <button
@@ -277,7 +303,7 @@ function Customers() {
         </div>
       )}
     </div>
-  )
+  );
 }
 
-export default Customers
+export default Customers;

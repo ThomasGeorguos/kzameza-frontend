@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { ShoppingCart, Package, ArrowUpDown, Search } from "lucide-react";
 import { useCart } from "../cart/UseCart";
 import toast from "react-hot-toast";
+import { apiFetch } from "../config/api";
 
 function Products() {
   const [products, setProducts] = useState([]);
@@ -13,7 +14,7 @@ function Products() {
 
   useEffect(() => {
     setLoading(true);
-    fetch("/api/products")
+    apiFetch("/api/products")
       .then((res) => res.json())
       .then((data) => {
         setProducts(data.products || []);

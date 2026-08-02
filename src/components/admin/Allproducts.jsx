@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Pencil, Trash2, Star, X, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
+import { apiFetch } from "../../config/api";
 
 function AllProducts() {
   const [products, setProductList] = useState([]);
@@ -12,12 +13,12 @@ function AllProducts() {
   const [confirmDeleteId, setConfirmDeleteId] = useState(null);
 
   useEffect(() => {
-    fetch("/api/products", { credentials: "include" })
+    apiFetch("/api/products", { credentials: "include" })
       .then((res) => res.json())
       .then((data) => setProductList(data.products || []))
       .catch((error) => console.error("Error fetching products", error));
 
-    fetch("/api/category", { credentials: "include" })
+    apiFetch("/api/category", { credentials: "include" })
       .then((res) => res.json())
       .then((data) => setCategories(data.categories || []))
       .catch((error) => console.error("Error fetching categories", error));
@@ -55,7 +56,7 @@ function AllProducts() {
     if (!editingProduct) return;
     setSaving(true);
     try {
-      const res = await fetch(`/api/products/${editingProduct._id}`, {
+      const res = await apiFetch(`/api/products/${editingProduct._id}`, {
         method: "PATCH",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
@@ -85,7 +86,7 @@ function AllProducts() {
   const handleDelete = async (productId) => {
     setDeletingId(productId);
     try {
-      const res = await fetch(`/api/products/${productId}`, {
+      const res = await apiFetch(`/api/products/${productId}`, {
         method: "DELETE",
         credentials: "include",
       });

@@ -1,138 +1,143 @@
-import { useEffect, useMemo, useState } from "react"
-import { Plus, Pencil, Trash2, Tag, X, Loader2 } from "lucide-react"
-import toast from "react-hot-toast"
+import { useEffect, useMemo, useState } from "react";
+import { Plus, Pencil, Trash2, Tag, X, Loader2 } from "lucide-react";
+import toast from "react-hot-toast";
+import { apiFetch } from "../../config/api";
 
 function Categories() {
-  const [categories, setCategories] = useState([])
-  const [products, setProducts] = useState([])
-  const [loading, setLoading] = useState(true)
+  const [categories, setCategories] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const [newName, setNewName] = useState("")
-  const [creating, setCreating] = useState(false)
+  const [newName, setNewName] = useState("");
+  const [creating, setCreating] = useState(false);
 
-  const [editingCategory, setEditingCategory] = useState(null)
-  const [editName, setEditName] = useState("")
-  const [saving, setSaving] = useState(false)
+  const [editingCategory, setEditingCategory] = useState(null);
+  const [editName, setEditName] = useState("");
+  const [saving, setSaving] = useState(false);
 
-  const [confirmDeleteId, setConfirmDeleteId] = useState(null)
-  const [deletingId, setDeletingId] = useState(null)
+  const [confirmDeleteId, setConfirmDeleteId] = useState(null);
+  const [deletingId, setDeletingId] = useState(null);
 
   const fetchAll = () => {
-    setLoading(true)
+    setLoading(true);
     Promise.all([
-      fetch("/api/category", { credentials: "include" }).then(res => res.json()),
-      fetch("/api/products", { credentials: "include" }).then(res => res.json()),
+      apiFetch("/api/category", { credentials: "include" }).then((res) =>
+        res.json(),
+      ),
+      apiFetch("/api/products", { credentials: "include" }).then((res) =>
+        res.json(),
+      ),
     ])
       .then(([catData, prodData]) => {
-        setCategories(catData.categories || [])
-        setProducts(prodData.products || [])
+        setCategories(catData.categories || []);
+        setProducts(prodData.products || []);
       })
-      .catch(err => console.error(err))
-      .finally(() => setLoading(false))
-  }
+      .catch((err) => console.error(err))
+      .finally(() => setLoading(false));
+  };
 
   useEffect(() => {
-    fetchAll()
-  }, [])
+    fetchAll();
+  }, []);
 
   // عدد المنتجات لكل كاتيجوري
   const productCounts = useMemo(() => {
-    const map = new Map()
+    const map = new Map();
     products.forEach((p) => {
-      const catId = p.category?._id || p.category
-      if (!catId) return
-      map.set(catId, (map.get(catId) || 0) + 1)
-    })
-    return map
-  }, [products])
+      const catId = p.category?._id || p.category;
+      if (!catId) return;
+      map.set(catId, (map.get(catId) || 0) + 1);
+    });
+    return map;
+  }, [products]);
 
   const handleCreate = async (e) => {
-    e.preventDefault()
-    if (!newName.trim()) return
+    e.preventDefault();
+    if (!newName.trim()) return;
 
-    setCreating(true)
+    setCreating(true);
     try {
-      const res = await fetch("/api/category", {
+      const res = await apiFetch("/api/category", {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name: newName.trim() }),
-      })
-      const data = await res.json()
+      });
+      const data = await res.json();
       if (!res.ok) {
-        toast.error(data.message || "Failed to create category")
-        return
+        toast.error(data.message || "Failed to create category");
+        return;
       }
-      setCategories(prev => [...prev, data.category])
-      setNewName("")
-      toast.success("Category added successfully")
+      setCategories((prev) => [...prev, data.category]);
+      setNewName("");
+      toast.success("Category added successfully");
     } catch (err) {
-      toast.error(err.message || "Server error")
+      toast.error(err.message || "Server error");
     } finally {
-      setCreating(false)
+      setCreating(false);
     }
-  }
+  };
 
   const openEdit = (category) => {
-    setEditingCategory(category)
-    setEditName(category.name)
-  }
+    setEditingCategory(category);
+    setEditName(category.name);
+  };
 
   const handleSaveEdit = async () => {
-    if (!editName.trim() || !editingCategory) return
-    setSaving(true)
+    if (!editName.trim() || !editingCategory) return;
+    setSaving(true);
     try {
-      const res = await fetch(`/api/category/${editingCategory._id}`, {
+      const res = await apiFetch(`/api/category/${editingCategory._id}`, {
         method: "PATCH",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name: editName.trim() }),
-      })
-      const data = await res.json()
+      });
+      const data = await res.json();
       if (!res.ok) {
-        toast.error(data.message || "Failed to update category")
-        return
+        toast.error(data.message || "Failed to update category");
+        return;
       }
-      setCategories(prev =>
-        prev.map(c => (c._id === editingCategory._id ? data.category : c))
-      )
-      toast.success("Category updated successfully")
-      setEditingCategory(null)
+      setCategories((prev) =>
+        prev.map((c) => (c._id === editingCategory._id ? data.category : c)),
+      );
+      toast.success("Category updated successfully");
+      setEditingCategory(null);
     } catch (err) {
-      toast.error(err.message || "Server error")
+      toast.error(err.message || "Server error");
     } finally {
-      setSaving(false)
+      setSaving(false);
     }
-  }
+  };
 
   const handleDelete = async (categoryId) => {
-    setDeletingId(categoryId)
+    setDeletingId(categoryId);
     try {
-      const res = await fetch(`/api/category/${categoryId}`, {
+      const res = await apiFetch(`/api/category/${categoryId}`, {
         method: "DELETE",
         credentials: "include",
-      })
-      const data = await res.json()
+      });
+      const data = await res.json();
       if (!res.ok) {
-        toast.error(data.message || "Failed to delete category")
-        return
+        toast.error(data.message || "Failed to delete category");
+        return;
       }
-      setCategories(prev => prev.filter(c => c._id !== categoryId))
-      toast.success("Category deleted successfully")
+      setCategories((prev) => prev.filter((c) => c._id !== categoryId));
+      toast.success("Category deleted successfully");
     } catch (err) {
-      toast.error(err.message || "Server error")
+      toast.error(err.message || "Server error");
     } finally {
-      setDeletingId(null)
-      setConfirmDeleteId(null)
+      setDeletingId(null);
+      setConfirmDeleteId(null);
     }
-  }
+  };
 
   if (loading) {
     return (
       <div className="flex items-center justify-center py-24">
         <div className="w-10 h-10 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
       </div>
-    )
+    );
   }
 
   return (
@@ -163,7 +168,11 @@ function Categories() {
           disabled={creating || !newName.trim()}
           className="flex items-center gap-2 bg-green-500 hover:bg-green-600 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-bold px-5 py-2.5 rounded-xl transition-all duration-200 cursor-pointer shrink-0"
         >
-          {creating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
+          {creating ? (
+            <Loader2 className="w-4 h-4 animate-spin" />
+          ) : (
+            <Plus className="w-4 h-4" />
+          )}
           Add Category
         </button>
       </form>
@@ -174,13 +183,17 @@ function Categories() {
           <div className="w-16 h-16 rounded-2xl bg-green-500/15 border border-green-400/25 flex items-center justify-center mx-auto mb-5">
             <Tag className="w-7 h-7 text-green-400" />
           </div>
-          <h2 className="text-white text-xl font-bold mb-2">No categories yet</h2>
-          <p className="text-gray-400 text-sm">Add your first category above.</p>
+          <h2 className="text-white text-xl font-bold mb-2">
+            No categories yet
+          </h2>
+          <p className="text-gray-400 text-sm">
+            Add your first category above.
+          </p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {categories.map((cat) => {
-            const count = productCounts.get(cat._id) || 0
+            const count = productCounts.get(cat._id) || 0;
             return (
               <div
                 key={cat._id}
@@ -190,7 +203,9 @@ function Categories() {
                   <Tag className="w-5 h-5 text-green-400" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-white font-bold text-sm truncate">{cat.name}</p>
+                  <p className="text-white font-bold text-sm truncate">
+                    {cat.name}
+                  </p>
                   <p className="text-gray-400 text-xs">
                     {count} product{count !== 1 ? "s" : ""}
                   </p>
@@ -215,7 +230,7 @@ function Categories() {
                   </button>
                 </div>
               </div>
-            )
+            );
           })}
         </div>
       )}
@@ -268,9 +283,12 @@ function Categories() {
             <div className="w-16 h-16 rounded-full bg-red-50 border-2 border-red-200 flex items-center justify-center mx-auto mb-5">
               <Trash2 className="w-7 h-7 text-red-400" />
             </div>
-            <h3 className="text-gray-800 font-black text-lg mb-2">Delete Category</h3>
+            <h3 className="text-gray-800 font-black text-lg mb-2">
+              Delete Category
+            </h3>
             <p className="text-gray-500 text-sm leading-relaxed mb-6">
-              Are you sure you want to delete this category? This can't be undone.
+              Are you sure you want to delete this category? This can't be
+              undone.
             </p>
             <div className="flex gap-3">
               <button
@@ -290,7 +308,7 @@ function Categories() {
         </div>
       )}
     </div>
-  )
+  );
 }
 
-export default Categories
+export default Categories;

@@ -14,6 +14,7 @@ import {
   AlertTriangle,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { apiFetch } from "../../config/api";
 
 export function Analytics() {
   const [products, setProducts] = useState([]);
@@ -21,17 +22,17 @@ export function Analytics() {
   const [orders, setOrders] = useState([]);
 
   useEffect(() => {
-    fetch("/api/products")
+    apiFetch("/api/products")
       .then((res) => res.json())
       .then((data) => setProducts(data.products || []))
       .catch((err) => console.error(err));
 
-    fetch("/api/category")
+    apiFetch("/api/category")
       .then((res) => res.json())
       .then((data) => setCategories(data.categories || []))
       .catch((err) => console.error(err));
 
-    fetch("/api/orders", { credentials: "include" })
+    apiFetch("/api/orders", { credentials: "include" })
       .then((res) => res.json())
       .then((data) => setOrders(data.orders || []))
       .catch((err) => console.error(err));
