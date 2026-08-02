@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Mail, Trash2, MailOpen, ChevronDown, Inbox } from "lucide-react";
 import toast from "react-hot-toast";
+import { apiFetch } from "../../config/api.js";
 
 // لو الايميل جيميل، افتح جيميل مباشرة في تاب جديد بدل الـ mailto العادي
 const getReplyLink = (msg) => {
@@ -25,7 +26,7 @@ function Messages() {
   const [busyId, setBusyId] = useState(null);
 
   useEffect(() => {
-    fetch("/api/contact", { credentials: "include" })
+    apiFetch("/api/contact", { credentials: "include" })
       .then((res) => res.json())
       .then((data) => setMessages(data.messages || []))
       .catch((err) => console.error(err))

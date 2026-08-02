@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Mail, MapPin, Send, MessageSquare, Lock } from "lucide-react";
 import toast from "react-hot-toast";
 import { useAuth } from "../auth/UseAuth";
+import { apiFetch } from "../config/api.js";
 
 function Contact() {
   const { user } = useAuth();
@@ -34,7 +35,7 @@ function Contact() {
     if (!form.name || !form.email || !form.message) return;
     setLoading(true);
     try {
-      const res = await fetch("/api/contact", {
+      const res = await apiFetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
