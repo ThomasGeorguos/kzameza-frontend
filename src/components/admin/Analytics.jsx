@@ -50,7 +50,7 @@ export function Analytics() {
     .slice(0, 5);
 
   // أوردرات - الملغي مش بيتحسب ضمن الإيرادات
-  const validOrders = orders.filter((o) => o.status !== "cancelled");
+  const validOrders = orders.filter((o) => o.status === "confirmed");
   const totalRevenue = validOrders.reduce(
     (acc, o) => acc + (o.totalPrice || 0),
     0,
