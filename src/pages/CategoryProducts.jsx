@@ -1,6 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { ShoppingCart, ArrowLeft, Tag, ArrowUpDown, Flame } from "lucide-react";
+import {
+  ShoppingCart,
+  ArrowLeft,
+  Tag,
+  ArrowUpDown,
+  Flame,
+  Search,
+} from "lucide-react";
 import { useCart } from "../cart/useCart";
 import toast from "react-hot-toast";
 import { apiFetch } from "../config/api";
@@ -11,6 +18,7 @@ function CategoryProducts() {
   const [category, setCategory] = useState(null);
   const [loading, setLoading] = useState(true);
   const [sortBy, setSortBy] = useState("newest");
+  const [query, setQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const PAGE_SIZE = 20;
   const { addToCart } = useCart();
@@ -74,7 +82,17 @@ function CategoryProducts() {
   ];
 
   const sortedProducts = useMemo(() => {
-    const list = [...products];
+    let list = [...products];
+
+    if (query.trim()) {
+      const q = query.toLowerCase();
+      list = list.filter(
+        (p) =>
+          p.title?.toLowerCase().includes(q) ||
+          p.description?.toLowerCase().includes(q),
+      );
+    }
+
     switch (sortBy) {
       case "bestSelling":
         return list.sort((a, b) => (b.soldCount || 0) - (a.soldCount || 0));
@@ -90,11 +108,11 @@ function CategoryProducts() {
           (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
         );
     }
-  }, [products, sortBy]);
+  }, [products, sortBy, query]);
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [sortBy, categoryId]);
+  }, [sortBy, categoryId, query]);
 
   const totalPages = Math.max(1, Math.ceil(sortedProducts.length / PAGE_SIZE));
 
@@ -162,29 +180,43 @@ function CategoryProducts() {
           </div>
 
           {products.length > 0 && (
-            <div className="flex items-center gap-2 bg-white border border-gray-200 rounded-xl px-3 py-2 shadow-sm">
-              {sortBy === "bestSelling" ? (
-                <Flame className="w-4 h-4 text-orange-500 shrink-0" />
-              ) : (
-                <ArrowUpDown className="w-4 h-4 text-gray-400 shrink-0" />
-              )}
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                className="text-sm font-semibold text-gray-700 bg-transparent focus:outline-none cursor-pointer"
-              >
-                {sortOptions.map((opt) => (
-                  <option key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </option>
-                ))}
-              </select>
+            <div className="flex items-center gap-3 w-full sm:w-auto">
+              {/* Search */}
+              <div className="relative flex-1 sm:flex-none">
+                <input
+                  type="text"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder={`Search in ${category?.name || "category"}...`}
+                  className="w-full sm:w-64 bg-white text-gray-800 placeholder-gray-400 text-sm rounded-xl px-4 py-2.5 pl-10 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-400 transition-all"
+                />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              </div>
+
+              <div className="flex items-center gap-2 bg-white border border-gray-200 rounded-xl px-3 py-2 shadow-sm shrink-0">
+                {sortBy === "bestSelling" ? (
+                  <Flame className="w-4 h-4 text-orange-500 shrink-0" />
+                ) : (
+                  <ArrowUpDown className="w-4 h-4 text-gray-400 shrink-0" />
+                )}
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                  className="text-sm font-semibold text-gray-700 bg-transparent focus:outline-none cursor-pointer"
+                >
+                  {sortOptions.map((opt) => (
+                    <option key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
           )}
         </div>
 
         {/* Empty */}
-        {products.length === 0 ? (
+        {sortedProducts.length === 0 ? (
           <div className="bg-[#0B3D4A] border border-white/10 rounded-2xl p-16 text-center">
             <div className="w-16 h-16 rounded-2xl bg-green-500/15 border border-green-400/25 flex items-center justify-center mx-auto mb-5">
               <ShoppingCart className="w-7 h-7 text-green-400" />
@@ -193,7 +225,9 @@ function CategoryProducts() {
               No products found
             </h2>
             <p className="text-gray-400 text-sm mb-6">
-              This category has no products yet.
+              {products.length === 0
+                ? "This category has no products yet."
+                : "Try a different search term."}
             </p>
             <Link
               to="/"

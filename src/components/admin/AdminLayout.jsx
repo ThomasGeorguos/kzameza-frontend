@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Outlet, NavLink } from "react-router-dom";
 import {
   Package,
@@ -16,8 +16,10 @@ import {
   Home,
   Mail,
   GalleryHorizontal,
+  AlertTriangle,
 } from "lucide-react";
 import { useAuth } from "../../auth/UseAuth";
+import { apiFetch } from "../../config/api";
 
 const navItems = [
   { icon: BarChart2, label: "Dashboard", to: "/admin" },
@@ -34,7 +36,20 @@ const navItems = [
 
 function AdminLayout() {
   const [open, setOpen] = useState(false);
+  const [showNotifs, setShowNotifs] = useState(false);
+  const [lowStockProducts, setLowStockProducts] = useState([]);
   const { user, logout } = useAuth();
+  const LOW_STOCK_THRESHOLD = 2;
+
+  useEffect(() => {
+    apiFetch("/api/products", { credentials: "include" })
+      .then((res) => res.json())
+      .then((data) => {
+        const all = data.products || [];
+        setLowStockProducts(all.filter((p) => p.stock <= LOW_STOCK_THRESHOLD));
+      })
+      .catch((err) => console.error("Error fetching low stock", err));
+  }, []);
 
   return (
     <div className="min-h-screen bg-slate-100 flex">
@@ -138,10 +153,69 @@ function AdminLayout() {
           {/* Right */}
           <div className="flex items-center gap-3">
             {/* Notifications */}
-            <button className="relative p-2 rounded-xl text-gray-300 hover:text-white hover:bg-white/10 transition-colors">
-              <Bell className="w-5 h-5" />
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-green-400 rounded-full" />
-            </button>
+            <div className="relative">
+              <button
+                onClick={() => setShowNotifs((prev) => !prev)}
+                className="relative p-2 rounded-xl text-gray-300 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+              >
+                <Bell className="w-5 h-5" />
+                {lowStockProducts.length > 0 && (
+                  <span className="absolute top-1 right-1 min-w-[16px] h-4 px-1 bg-red-500 rounded-full text-[10px] font-bold text-white flex items-center justify-center">
+                    {lowStockProducts.length}
+                  </span>
+                )}
+              </button>
+
+              {showNotifs && (
+                <>
+                  <div
+                    className="fixed inset-0 z-30"
+                    onClick={() => setShowNotifs(false)}
+                  />
+                  <div className="absolute right-0 mt-2 w-80 max-h-96 overflow-y-auto bg-[#0B3D4A] border border-white/10 rounded-2xl shadow-2xl z-40">
+                    <div className="p-4 border-b border-white/10 flex items-center gap-2">
+                      <AlertTriangle className="w-4 h-4 text-yellow-400" />
+                      <h4 className="text-white font-bold text-sm">
+                        Low Stock Alerts
+                      </h4>
+                    </div>
+
+                    {lowStockProducts.length === 0 ? (
+                      <p className="text-gray-400 text-xs p-4 text-center">
+                        All products are well stocked 🎉
+                      </p>
+                    ) : (
+                      <ul className="divide-y divide-white/5">
+                        {lowStockProducts.map((p) => (
+                          <li key={p._id}>
+                            <NavLink
+                              to="/admin/products"
+                              onClick={() => setShowNotifs(false)}
+                              className="flex items-center justify-between px-4 py-3 hover:bg-white/5 transition-colors cursor-pointer"
+                            >
+                              <span className="text-gray-200 text-xs font-medium truncate pr-2">
+                                {p.title}
+                              </span>
+                              <span
+                                className={`text-[10px] font-bold px-2 py-1 rounded-full shrink-0 ${
+                                  p.stock === 0
+                                    ? "bg-red-500/20 text-red-400"
+                                    : "bg-yellow-500/20 text-yellow-400"
+                                }`}
+                              >
+                                {p.stock === 0
+                                  ? "Out of stock"
+                                  : `${p.stock} left`}
+                              </span>
+                            </NavLink>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                </>
+              )}
+            </div>
 
             {/* Admin Avatar */}
             <div className="flex items-center gap-2.5 bg-white/10 border border-white/15 rounded-xl px-3 py-1.5 cursor-pointer hover:bg-white/15 transition-colors">
