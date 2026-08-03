@@ -3,11 +3,11 @@ import { Link } from "react-router-dom";
 function Footer() {
   return (
     <footer className="bg-[#0B3D4A] border-t border-white/10">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-7">
           {/* Brand */}
           <div>
-            <div className="flex items-center gap-3 mb-4">
+            <div className="flex items-center gap-2.5 mb-3">
               <div className="w-9 h-9 rounded-xl bg-green-500/20 border border-green-400/30 flex items-center justify-center">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -41,10 +41,10 @@ function Footer() {
 
           {/* Quick Links */}
           <div>
-            <h4 className="text-white font-bold text-sm mb-4 tracking-wide">
+            <h4 className="text-white font-bold text-sm mb-3 tracking-wide">
               Quick Links
             </h4>
-            <ul className="flex flex-col gap-2.5">
+            <ul className="flex flex-col gap-2">
               <li>
                 <Link
                   to="/"
@@ -82,16 +82,16 @@ function Footer() {
 
           {/* Connect */}
           <div>
-            <h4 className="text-white font-bold text-sm mb-4 tracking-wide">
+            <h4 className="text-white font-bold text-sm mb-3 tracking-wide">
               Connect With Us
             </h4>
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-2.5">
               {/* فيسبوك: حط اللينك بتاعك مكان href="" */}
               <a
                 href=""
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 hover:text-green-400 hover:border-green-400/30 hover:bg-green-500/10 transition-all duration-200"
+                className="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 hover:text-green-400 hover:border-green-400/30 hover:bg-green-500/10 transition-all duration-200"
               >
                 <svg
                   className="w-[18px] h-[18px]"
@@ -107,7 +107,7 @@ function Footer() {
                 href=""
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 hover:text-green-400 hover:border-green-400/30 hover:bg-green-500/10 transition-all duration-200"
+                className="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 hover:text-green-400 hover:border-green-400/30 hover:bg-green-500/10 transition-all duration-200"
               >
                 <svg
                   className="w-[18px] h-[18px]"
@@ -121,7 +121,7 @@ function Footer() {
               {/* جيميل: حط الإيميل بتاعك مكان href="" - مثال: mailto:info@kzameza.com */}
               <a
                 href=""
-                className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 hover:text-green-400 hover:border-green-400/30 hover:bg-green-500/10 transition-all duration-200"
+                className="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 hover:text-green-400 hover:border-green-400/30 hover:bg-green-500/10 transition-all duration-200"
               >
                 <svg
                   className="w-[18px] h-[18px]"
@@ -136,7 +136,7 @@ function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="mt-10 pt-6 border-t border-white/10 flex justify-center">
+        <div className="mt-6 pt-4 border-t border-white/10 flex justify-center">
           <p className="text-gray-500 text-xs">
             © {new Date().getFullYear()} KzaMeza. All rights reserved.
           </p>

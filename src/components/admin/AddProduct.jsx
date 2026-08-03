@@ -10,6 +10,7 @@ import {
   Percent,
 } from "lucide-react";
 import { apiFetch } from "../../config/api";
+import toast from "react-hot-toast";
 
 function AddProduct() {
   const [categories, setCategories] = useState([]);
@@ -65,7 +66,7 @@ function AddProduct() {
       });
       const data = await res.json();
       if (res.ok) {
-        alert("Product added successfully!");
+        toast.success("Product added successfully!");
         setForm({
           title: "",
           description: "",
@@ -79,11 +80,11 @@ function AddProduct() {
         });
         setPreview(null);
       } else {
-        alert(data.message || data.error || "Something went wrong");
+        toast.error(data.message || data.error || "Something went wrong");
       }
     } catch (err) {
       console.error(err);
-      alert("Server error");
+      toast.error("Server error");
     } finally {
       setLoading(false);
     }
