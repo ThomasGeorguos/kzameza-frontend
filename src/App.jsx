@@ -13,6 +13,7 @@ import Allproducts from "./components/admin/Allproducts";
 import AdminOrders from "./components/admin/AdminOrders";
 import Customers from "./components/admin/Customers";
 import Categories from "./components/admin/Categories";
+import HeroSlides from "./components/admin/HeroSlides";
 import Messages from "./components/admin/Messages";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { Analytics } from "./components/admin/Analytics";
@@ -108,6 +109,7 @@ function App() {
           <Route path="orders" element={<AdminOrders />} />
           <Route path="customers" element={<Customers />} />
           <Route path="categories" element={<Categories />} />
+          <Route path="hero-slides" element={<HeroSlides />} />
           <Route path="messages" element={<Messages />} />
           <Route path="settings" element={<UserSettings />} />
           <Route path="analytics" element={<Analytics />} />

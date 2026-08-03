@@ -15,6 +15,7 @@ import {
   PackagePlus,
   Home,
   Mail,
+  GalleryHorizontal,
 } from "lucide-react";
 import { useAuth } from "../../auth/UseAuth";
 
@@ -25,6 +26,7 @@ const navItems = [
   { icon: ShoppingBag, label: "Orders", to: "/admin/orders" },
   { icon: Users, label: "Customers", to: "/admin/customers" },
   { icon: Tag, label: "Categories", to: "/admin/categories" },
+  { icon: GalleryHorizontal, label: "Hero Slides", to: "/admin/hero-slides" },
   { icon: Mail, label: "Messages", to: "/admin/messages" },
   { icon: Settings, label: "Settings", to: "settings" },
   { icon: Home, label: "Home", to: "/" },
