@@ -10,6 +10,8 @@ function Products() {
   const [loading, setLoading] = useState(true);
   const [sortOrder, setSortOrder] = useState("desc"); // desc = الأكتر كمية الأول
   const [query, setQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const PAGE_SIZE = 20;
   const { addToCart } = useCart();
 
   useEffect(() => {
@@ -79,6 +81,17 @@ function Products() {
 
     return list;
   }, [products, query, sortOrder]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [query, sortOrder]);
+
+  const totalPages = Math.max(1, Math.ceil(visibleProducts.length / PAGE_SIZE));
+
+  const paginatedProducts = useMemo(() => {
+    const start = (currentPage - 1) * PAGE_SIZE;
+    return visibleProducts.slice(start, start + PAGE_SIZE);
+  }, [visibleProducts, currentPage]);
 
   if (loading) {
     return (
@@ -171,7 +184,7 @@ function Products() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-            {visibleProducts.map((product) => {
+            {paginatedProducts.map((product) => {
               const stock = getStockStatus(product.stock);
               return (
                 <Link
@@ -249,6 +262,41 @@ function Products() {
                 </Link>
               );
             })}
+          </div>
+        )}
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="flex items-center justify-center gap-2 mt-10">
+            <button
+              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+              disabled={currentPage === 1}
+              className="px-4 py-2 rounded-xl text-sm font-semibold bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all cursor-pointer"
+            >
+              Prev
+            </button>
+
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+              <button
+                key={page}
+                onClick={() => setCurrentPage(page)}
+                className={`w-9 h-9 rounded-xl text-sm font-bold transition-all cursor-pointer ${
+                  currentPage === page
+                    ? "bg-[#0B3D4A] text-white"
+                    : "bg-white border border-gray-200 text-gray-600 hover:bg-gray-50"
+                }`}
+              >
+                {page}
+              </button>
+            ))}
+
+            <button
+              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+              disabled={currentPage === totalPages}
+              className="px-4 py-2 rounded-xl text-sm font-semibold bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all cursor-pointer"
+            >
+              Next
+            </button>
           </div>
         )}
       </div>
