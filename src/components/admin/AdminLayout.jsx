@@ -37,9 +37,10 @@ const navItems = [
 function AdminLayout() {
   const [open, setOpen] = useState(false);
   const [showNotifs, setShowNotifs] = useState(false);
+  const [notifsSeen, setNotifsSeen] = useState(false);
   const [lowStockProducts, setLowStockProducts] = useState([]);
   const { user, logout } = useAuth();
-  const LOW_STOCK_THRESHOLD = 2;
+  const LOW_STOCK_THRESHOLD = 5;
 
   useEffect(() => {
     apiFetch("/api/products", { credentials: "include" })
@@ -155,11 +156,14 @@ function AdminLayout() {
             {/* Notifications */}
             <div className="relative">
               <button
-                onClick={() => setShowNotifs((prev) => !prev)}
+                onClick={() => {
+                  setShowNotifs((prev) => !prev);
+                  setNotifsSeen(true);
+                }}
                 className="relative p-2 rounded-xl text-gray-300 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
               >
                 <Bell className="w-5 h-5" />
-                {lowStockProducts.length > 0 && (
+                {lowStockProducts.length > 0 && !notifsSeen && (
                   <span className="absolute top-1 right-1 min-w-[16px] h-4 px-1 bg-red-500 rounded-full text-[10px] font-bold text-white flex items-center justify-center">
                     {lowStockProducts.length}
                   </span>
