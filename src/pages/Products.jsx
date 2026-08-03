@@ -242,7 +242,7 @@ function Products() {
                         className="flex items-center gap-1.5 bg-green-500 hover:bg-green-600 disabled:opacity-40 disabled:cursor-not-allowed text-white text-xs font-bold px-3 py-2 rounded-xl transition-all duration-200 hover:shadow-md hover:shadow-green-500/30 hover:-translate-y-0.5 cursor-pointer"
                       >
                         <ShoppingCart className="w-3.5 h-3.5" />
-                        Add
+                        Add to cart
                       </button>
                     </div>
                   </div>
