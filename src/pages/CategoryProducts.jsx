@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { ShoppingCart, ArrowLeft, Tag } from "lucide-react";
+import { ShoppingCart, ArrowLeft, Tag, ArrowUpDown, Flame } from "lucide-react";
 import { useCart } from "../cart/useCart";
 import toast from "react-hot-toast";
 import { apiFetch } from "../config/api";
@@ -10,6 +10,7 @@ function CategoryProducts() {
   const [products, setProducts] = useState([]);
   const [category, setCategory] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [sortBy, setSortBy] = useState("newest");
   const { addToCart } = useCart();
 
   useEffect(() => {
@@ -62,6 +63,33 @@ function CategoryProducts() {
     }
   };
 
+  const sortOptions = [
+    { value: "newest", label: "Newest" },
+    { value: "bestSelling", label: "Best Selling" },
+    { value: "priceLow", label: "Price: Low to High" },
+    { value: "priceHigh", label: "Price: High to Low" },
+    { value: "stock", label: "Most in Stock" },
+  ];
+
+  const sortedProducts = useMemo(() => {
+    const list = [...products];
+    switch (sortBy) {
+      case "bestSelling":
+        return list.sort((a, b) => (b.soldCount || 0) - (a.soldCount || 0));
+      case "priceLow":
+        return list.sort((a, b) => a.price - b.price);
+      case "priceHigh":
+        return list.sort((a, b) => b.price - a.price);
+      case "stock":
+        return list.sort((a, b) => b.stock - a.stock);
+      case "newest":
+      default:
+        return list.sort(
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
+        );
+    }
+  }, [products, sortBy]);
+
   if (loading) {
     return (
       <div className="min-h-screen bg-slate-100 flex items-center justify-center">
@@ -105,18 +133,41 @@ function CategoryProducts() {
         </Link>
 
         {/* Header */}
-        <div className="flex items-center gap-3 mb-8">
-          <div className="w-10 h-10 rounded-xl bg-[#0B3D4A] border border-white/10 flex items-center justify-center">
-            <Tag className="w-5 h-5 text-green-400" />
+        <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-[#0B3D4A] border border-white/10 flex items-center justify-center">
+              <Tag className="w-5 h-5 text-green-400" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-black text-gray-800">
+                {category?.name || "Category"}
+              </h1>
+              <p className="text-gray-500 text-xs mt-0.5">
+                {products.length} products found
+              </p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-2xl font-black text-gray-800">
-              {category?.name || "Category"}
-            </h1>
-            <p className="text-gray-500 text-xs mt-0.5">
-              {products.length} products found
-            </p>
-          </div>
+
+          {products.length > 0 && (
+            <div className="flex items-center gap-2 bg-white border border-gray-200 rounded-xl px-3 py-2 shadow-sm">
+              {sortBy === "bestSelling" ? (
+                <Flame className="w-4 h-4 text-orange-500 shrink-0" />
+              ) : (
+                <ArrowUpDown className="w-4 h-4 text-gray-400 shrink-0" />
+              )}
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="text-sm font-semibold text-gray-700 bg-transparent focus:outline-none cursor-pointer"
+              >
+                {sortOptions.map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
         </div>
 
         {/* Empty */}
@@ -140,7 +191,7 @@ function CategoryProducts() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-            {products.map((product) => {
+            {sortedProducts.map((product) => {
               const stock = getStockStatus(product.stock);
               return (
                 <Link
